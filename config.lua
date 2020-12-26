@@ -104,7 +104,7 @@ Config.WeedSale = {
 -- Conversion Settings:
 Config.DrugEffects = {
 	{ 
-		UsableItem 				= "coke1g",						-- item name in database for usable item
+		UsableItem 				= "coke_small_brick",						-- item name in database for usable item
 		ProgressBarText			= "SMOKING CRACK COCAINE",		-- progress bar text
 		UsableTime 				= 5000,							-- Smoking time in MS
 		EffectDuration 			= 30,							-- Duration for effect in seconds
@@ -136,7 +136,7 @@ Config.DrugEffects = {
 		AddHealthValue			= 20,							-- Set value for player health thats going to be added
 	},
 	{ 
-		UsableItem 				= "joint2g",					-- item name in database for usable item
+		UsableItem 				= "joint",					-- item name in database for usable item
 		ProgressBarText			= "SMOKING JOINT",				-- progress bar text
 		UsableTime 				= 5000,							-- item name in database for usable item
 		EffectDuration 			= 30,							-- Duration for effect in seconds
@@ -156,11 +156,11 @@ Config.DrugEffects = {
 -- Conversion Settings:
 Config.DrugConversion = {
 	{ 
-		UsableItem 				= "cokebrick",					-- item name in database for usable item
-		RewardItem 				= "coke10g",					-- item name in database for required item
+		UsableItem 				= "coke_brick",					-- item name in database for usable item
+		RewardItem 				= "coke_small_brick",					-- item name in database for required item
 		RewardAmount 			= {a = 6, b = 10},				-- Amount of RewardItem player receives. "a" is without scale and "b" is with scale
 		MaxRewardItemInv		= {e = 44, f = 40},				-- Amount of RewardItem player can hold in inventory. "e" is without scale and "f" is with scale
-		RequiredItem 			= "drugbags",					-- item name in database for required item
+		RequiredItem 			= "cokebaggy",					-- item name in database for required item
 		RequiredItemAmount 		= {c = 6, d = 10},				-- Amount of RequiredItem for conversion. "c" is without scale and "d" is with scale
 		HighQualityScale		= true,							-- enable/disable scale feature for the drugType
 		hqscale					= "hqscale",					-- item name in database for hiqh quality scale item
@@ -172,7 +172,7 @@ Config.DrugConversion = {
 		RewardItem 				= "meth10g",					-- item name in database for required item
 		RewardAmount 			= {a = 6, b = 10},				-- Amount of RewardItem player receives. "a" is without scale and "b" is with scale
 		MaxRewardItemInv		= {e = 44, f = 40},				-- Amount of RewardItem player can hold in inventory. "e" is without scale and "f" is with scale
-		RequiredItem 			= "drugbags",					-- item name in database for required item
+		RequiredItem 			= "crack_baggy",					-- item name in database for required item
 		RequiredItemAmount 		= {c = 6, d = 10},				-- Amount of RequiredItem for conversion. "c" is without scale and "d" is with scale
 		HighQualityScale		= true,							-- enable/disable scale feature for the drugType
 		hqscale					= "hqscale",					-- item name in database for hiqh quality scale item
@@ -184,7 +184,7 @@ Config.DrugConversion = {
 		RewardItem 				= "weed20g",					-- item name in database for required item
 		RewardAmount 			= {a = 8, b = 10},				-- Amount of RewardItem player receives. "a" is without scale and "b" is with scale
 		MaxRewardItemInv		= {e = 44, f = 40},				-- Amount of RewardItem player can hold in inventory. "e" is without scale and "f" is with scale
-		RequiredItem 			= "drugbags",					-- item name in database for required item
+		RequiredItem 			= "empty_weed_bag",					-- item name in database for required item
 		RequiredItemAmount 		= {c = 8, d = 10},				-- Amount of RequiredItem for conversion. "c" is without scale and "d" is with scale
 		HighQualityScale		= true,							-- enable/disable scale feature for the drugType
 		hqscale					= "hqscale",					-- item name in database for hiqh quality scale item
@@ -196,7 +196,7 @@ Config.DrugConversion = {
 		RewardItem 				= "coke1g",						-- item name in database for required item
 		RewardAmount 			= {a = 6, b = 10},				-- Amount of RewardItem player receives. "a" is without scale and "b" is with scale
 		MaxRewardItemInv		= {e = 44, f = 40},				-- Amount of RewardItem player can hold in inventory. "e" is without scale and "f" is with scale
-		RequiredItem 			= "drugbags",					-- item name in database for required item
+		RequiredItem 			= "crack_baggy",					-- item name in database for required item
 		RequiredItemAmount 		= {c = 6, d = 10},				-- Amount of RequiredItem for conversion. "c" is without scale and "d" is with scale
 		HighQualityScale		= true,							-- enable/disable scale feature for the drugType
 		hqscale					= "hqscale",					-- item name in database for hiqh quality scale item
@@ -232,7 +232,7 @@ Config.DrugConversion = {
 		RewardItem 				= "joint2g",					-- item name in database for required item
 		RewardAmount 			= 2,							-- Amount of RewardItem player receives
 		MaxRewardItemInv		= {e = 44, f = 40},				-- Amount of RewardItem player can hold in inventory. "e" is without scale and "f" is with scale
-		RequiredItem 			= "rolpaper",					-- item name in database for required item
+		RequiredItem 			= "rolling_paper",					-- item name in database for required item
 		RequiredItemAmount 		= 2,							-- Amount of RequiredItem for conversion
 		HighQualityScale		= false,						-- enable/disable scale feature for the drugType
 		hqscale					= "hqscale",					-- item name in database for hiqh quality scale item

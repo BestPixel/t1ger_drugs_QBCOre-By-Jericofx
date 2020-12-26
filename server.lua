@@ -2,9 +2,9 @@
 ------- Created by T1GER#9080 -------
 ------------------------------------- 
 
-ESX = nil
+RSCore = nil
 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+TriggerEvent('RSCore:GetObject', function(obj) RSCore = obj end)
 
 -- START TEST
 local JobCooldown 		= {}
@@ -65,25 +65,25 @@ end)
 
 -- Usable item to start drugs jobs:
 ESX.RegisterUsableItem('drugItem', function(source)
-	local xPlayer = ESX.GetPlayerFromId(source)
+	local xPlayer = RSCore.Functions.GetPlayer(source)
 	if not HasCooldown(GetPlayerIdentifier(source)) then
-		if xPlayer.getInventoryItem(Config.HackerDevice).count >= 1 then
+		if xPlayer.Functions.GetItemByName(Config.HackerDevice).amount >= 1 then
 			TriggerClientEvent("t1ger_drugs:UsableItem",source)
 		else
-			TriggerClientEvent('esx:showNotification', source, "You need a ~r~Hacking Device~s~ to use the ~y~USB~s~")
+			TriggerClientEvent('RSCore:Notify', source, "You need a ~r~Hacking Device~s~ to use the ~y~USB~s~")
 		end
  	else
-	 	TriggerClientEvent("esx:showNotification",source,string.format("~y~USB~s~ is usable in: ~b~%s minutes~s~",GetCooldownTime(GetPlayerIdentifier(source))))
+	 	TriggerClientEvent("RSCore:Notify",source,string.format("~y~USB~s~ is usable in: ~b~%s minutes~s~",GetCooldownTime(GetPlayerIdentifier(source))))
   	end
 end)
 
 -- Server Event for Buying Drug Job:
 RegisterServerEvent("t1ger_drugs:GetSelectedJob")
 AddEventHandler("t1ger_drugs:GetSelectedJob", function(drugType,BuyPrice,minReward,maxReward)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	local itemLabel = ESX.GetItemLabel(itemName)
-	if xPlayer.getMoney() >= BuyPrice then
-		xPlayer.removeMoney(BuyPrice)
+	local xPlayer = RSCore.Functions.GetPlayer(source)
+	local itemLabel = RSCore.Functions.GetItemByName(itemName)
+	if xPlayer.PlayerData.money >= BuyPrice then
+		xPlayer.Functions.RemoveMoney(BuyPrice)
 		TriggerEvent("t1ger_drugs:addCooldownToSource",source)
 		TriggerClientEvent("t1ger_drugs:BrowseAvailableJobs",source, 0, drugType, minReward, maxReward)
 		if drugType == "coke" then
@@ -93,9 +93,9 @@ AddEventHandler("t1ger_drugs:GetSelectedJob", function(drugType,BuyPrice,minRewa
 		elseif drugType == "weed" then
 			label = "Weed"
 		end	
-		TriggerClientEvent("esx:showNotification",source,"You paid ~g~$"..BuyPrice.."~s~ for a ~r~"..label.."~s~ job")
+		TriggerClientEvent("RSCore:Notify",source,"You paid ~g~$"..BuyPrice.."~s~ for a ~r~"..label.."~s~ job")
 	else
-		TriggerClientEvent("esx:showNotification",source,"You don't have enough money")
+		TriggerClientEvent("RSCore:Notify",source,"You don't have enough money")
 	end
 end)
 
@@ -104,24 +104,24 @@ RegisterServerEvent("t1ger_drugs:JobReward")
 AddEventHandler("t1ger_drugs:JobReward",function(minReward,maxReward,typeDrug)
 	local minDrugReward = minReward
 	local maxDrugReward = maxReward
-	local xPlayer = ESX.GetPlayerFromId(source)
+	local xPlayer = RSCore.Functions.GetPlayer(source)
 	drugAmount = math.random(minDrugReward,maxDrugReward)
-	xPlayer.addInventoryItem(typeDrug.."brick",math.ceil(drugAmount))
+	xPlayer.Function.Additem(typeDrug.."brick",math.ceil(drugAmount))
 end)
 
 -- Usable item for drug effects:
 Citizen.CreateThread(function()
 	for k,v in pairs(Config.DrugEffects) do 
 		ESX.RegisterUsableItem(v.UsableItem, function(source)
-			local xPlayer = ESX.GetPlayerFromId(source)
-			local itemLabel = ESX.GetItemLabel(v.UsableItem)
+			local xPlayer = RSCore.Functions.GetPlayer(source)
+			local itemLabel = RSCore.Functions.GetItemByName(v.UsableItem)
 			
 			if not DrugEffect(GetPlayerIdentifier(source)) then
 				TriggerEvent("t1ger_drugs:addDrugEffectTimer",source,v.UsableTime)
-				xPlayer.removeInventoryItem(v.UsableItem,1)
+				xPlayer.Functions.RemoveItem(v.UsableItem,1)
 				TriggerClientEvent("t1ger_drugs:DrugEffects",source,k,v)
 			else
-				TriggerClientEvent("esx:showNotification",source,string.format("You are ~b~already~s~ consuming a drug",GetDrugEffectTime(GetPlayerIdentifier(source))))	
+				TriggerClientEvent("RSCore:Notify",source,string.format("You are ~b~already~s~ consuming a drug",GetDrugEffectTime(GetPlayerIdentifier(source))))	
 			end	
 		end)
 	end
@@ -131,12 +131,12 @@ end)
 Citizen.CreateThread(function()
 	for k,v in pairs(Config.DrugConversion) do 
 		ESX.RegisterUsableItem(v.UsableItem, function(source)
-			local xPlayer = ESX.GetPlayerFromId(source)
-			local itemLabel = ESX.GetItemLabel(v.UsableItem)
+			local xPlayer = RSCore.Functions.GetPlayer(source)
+			local itemLabel = RSCore.Functions.GetItemByName(v.UsableItem)
 			local drugOutput
 			local requiredItems
 			
-			local scale = xPlayer.getInventoryItem(v.hqscale).count >= 1
+			local scale = xPlayer.Functions.GetItemByName(v.hqscale).amount >= 1
 			if v.HighQualityScale then
 				if scale then
 					drugOutput = v.RewardAmount.b
@@ -150,26 +150,26 @@ Citizen.CreateThread(function()
 				requiredItems = v.RequiredItemAmount
 			end
 				
-			local reqItems = xPlayer.getInventoryItem(v.RequiredItem).count >= requiredItems
+			local reqItems = xPlayer.Functions.GetItemByName(v.RequiredItem).amount >= requiredItems
 			if not reqItems then
-				local reqItemLabel = ESX.GetItemLabel(v.RequiredItem)
-				TriggerClientEvent("esx:showNotification",source,"You ~r~do not have~s~ enough ~y~"..reqItemLabel.."~s~")
+				local reqItemLabel = RSCore.Functions.GetItemByName(v.RequiredItem)
+				TriggerClientEvent("RSCore:Notify",source,"You ~r~do not have~s~ enough ~y~"..reqItemLabel.."~s~")
 				return
 			end
 			
-			if xPlayer.getInventoryItem(v.RewardItem).count <= v.MaxRewardItemInv.f or (not scale and xPlayer.getInventoryItem(v.RewardItem).count <= v.MaxRewardItemInv.e) then
+			if xPlayer.Functions.GetItemByName(v.RewardItem).count <= v.MaxRewardItemInv.f or (not scale and xPlayer.Functions.GetItemByName(v.RewardItem).count <= v.MaxRewardItemInv.e) then
 				if not Converting(GetPlayerIdentifier(source)) then
 					TriggerEvent("t1ger_drugs:addConvertingTimer",source,v.ConversionTime)
-					xPlayer.removeInventoryItem(v.UsableItem,1)
-					xPlayer.removeInventoryItem(v.RequiredItem,requiredItems)
+					xPlayer.Functions.RemoveItem(v.UsableItem,1)
+					xPlayer.Functions.RemoveItem(v.RequiredItem,requiredItems)
 					TriggerClientEvent("t1ger_drugs:ConvertProcess",source,k,v)
 					Citizen.Wait(v.ConversionTime)
-					xPlayer.addInventoryItem(v.RewardItem,drugOutput)
+					xPlayer.Functions.AddItem(v.RewardItem,drugOutput)
 				else
-					TriggerClientEvent("esx:showNotification",source,string.format("You are ~b~already~s~ converting",GetConvertTime(GetPlayerIdentifier(source))))	
+					TriggerClientEvent("RSCore:Notify",source,string.format("You are ~b~already~s~ converting",GetConvertTime(GetPlayerIdentifier(source))))	
 				end	
 			else
-				TriggerClientEvent("esx:showNotification",source,"You ~r~do not have~s~ enough ~b~empty space~s~ for more ~y~"..itemLabel.."~s~")
+				TriggerClientEvent("RSCore:Notify",source,"You ~r~do not have~s~ enough ~b~empty space~s~ for more ~y~"..itemLabel.."~s~")
 			end
 		end)
 	end
@@ -189,10 +189,10 @@ end)
 
 RegisterServerEvent("t1ger_drugs:sellDrugs")
 AddEventHandler("t1ger_drugs:sellDrugs", function()
-	local xPlayer = ESX.GetPlayerFromId(source)
-	local weed = xPlayer.getInventoryItem(Config.WeedDrug).count
-	local meth = xPlayer.getInventoryItem(Config.MethDrug).count
-	local coke = xPlayer.getInventoryItem(Config.CokeDrug).count
+	local xPlayer = RSCore.Functions.GetPlayer(source)
+	local weed = xPlayer.Functions.GetItemByName(Config.WeedDrug).count
+	local meth = xPlayer.Functions.GetItemByName(Config.MethDrug).count
+	local coke = xPlayer.Functions.GetItemByName(Config.CokeDrug).count
 	local drugamount = 0
 	local price = 0
 	local drugType = nil
@@ -230,7 +230,7 @@ AddEventHandler("t1ger_drugs:sellDrugs", function()
 		end
 	
 	else
-		TriggerClientEvent('esx:showNotification', source, "You have ~r~no more~r~ ~y~drugs~s~ on you")
+		TriggerClientEvent('RSCore:Notify', source, "You have ~r~no more~r~ ~y~drugs~s~ on you")
 		return
 	end
 	
@@ -243,23 +243,23 @@ AddEventHandler("t1ger_drugs:sellDrugs", function()
 	end
 	
 	if drugType ~= nil then
-		local drugLabel = ESX.GetItemLabel(drugType)
+		local drugLabel = RSCore.Functions.GetItemByName(drugType)
 		AddToSoldAmount(xPlayer.getIdentifier(),drugamount)
-		xPlayer.removeInventoryItem(drugType, drugamount)
+		xPlayer.Functions.RemoveItem(drugType, drugamount)
 		if Config.ReceiveDirtyCash then
-			xPlayer.addAccountMoney('black_money', price)
+			xPlayer.Functions.AddMoney('cash', price)
 		else
-			xPlayer.addMoney(price)
+			xPlayer.Functions.AddMoney(price)
 		end
-		TriggerClientEvent('esx:showNotification', source, "You sold ~b~"..drugamount.."x~s~ ~y~"..drugLabel.."~s~ for ~r~$"..price.."~s~")
+		TriggerClientEvent('RSCore:Notify', source, "You sold ~b~"..drugamount.."x~s~ ~y~"..drugLabel.."~s~ for ~r~$"..price.."~s~")
 	end		
 end)
 
 RegisterServerEvent("t1ger_drugs:canSellDrugs")
 AddEventHandler("t1ger_drugs:canSellDrugs", function()
-	local xPlayer = ESX.GetPlayerFromId(source)
+	local xPlayer = RSCore.Functions.GetPlayer(source)
 	if xPlayer ~= nil then
-		local soldAmount = (xPlayer.getInventoryItem("coke1g").count > 0 or xPlayer.getInventoryItem("meth1g").count > 0 or xPlayer.getInventoryItem("weed4g").count > 0) and CheckSoldAmount(xPlayer.getIdentifier()) < Config.maxCap
+		local soldAmount = (xPlayer.Functions.GetItemByName("coke1g").count > 0 or xPlayer.Functions.GetItemByName("meth1g").count > 0 or xPlayer.Functions.GetItemByName("weed4g").count > 0) and CheckSoldAmount(xPlayer.getIdentifier()) < Config.maxCap
 		TriggerClientEvent("t1ger_drugs:canSellDrugs",source,soldAmount)
 	end
 end)

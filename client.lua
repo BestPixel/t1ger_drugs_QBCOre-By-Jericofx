@@ -131,7 +131,39 @@ function ChooseDrugMenu()
 	end
 	table.insert(elements,{label = "Cancel", value = "cancel_drug_job"})
 		
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), "choose_drug_job_menu",
+	local assert = assert
+	local menu = assert(MenuV)
+
+
+
+	local ChooseDrug = MenuV:CreateMenu("Choose Drug Job", '', 'topleft', 255, 0, 0, 'size-150')
+	--local Manage1 = MenuV:CreateMenu('Rename', '', 'topleft', 255, 0, 0, 'size-150')
+		MenuV:OpenMenu(ChooseDrug, function()
+	end)
+	
+
+
+	for k, v in ipairs(elements)do
+		local button = ChooseDrug:AddButton({ icon = "✨ ", label = v.lang, value = v, select = function(btn)
+		local select = btn.Value.value
+		if select == "cancel_drug_job" then
+			RSCore.Functions.Notify("You ~r~cancelled~s~ the request",2000,"error")
+			menu.close()
+			ClearPedTasks(player)
+			FreezeEntityPosition(player,false)
+		else
+			TriggerServerEvent("t1ger_drugs:GetSelectedJob",select, select.BuyPrice, select.MinReward, select.MaxReward )
+			Citizen.Wait(100)
+			menu.close()
+			ClearPedTasks(player)
+			FreezeEntityPosition(player,false)
+		end
+		
+		end })
+		
+	end
+
+--[[ 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), "choose_drug_job_menu",
 		{
 			title    = "Choose Drug Job",
 			align    = "center",
@@ -158,7 +190,7 @@ function ChooseDrugMenu()
 		ClearPedTasks(player)
 		FreezeEntityPosition(player,false)
 	end, function(data, menu)
-	end)
+	end) ]]
 end
 
 -- Event to browse through available locations:
@@ -211,10 +243,10 @@ AddEventHandler('t1ger_drugs:startMainEvent', function(id,drugType,minReward,max
 				selectedJob.VanSpawned = true
 				TriggerServerEvent("t1ger_drugs:syncJobsData",Config.Jobs)
 				Citizen.Wait(500)
-                while ESX == nil do
+                while RSCore == nil do
                     Citizen.Wait(1)
                 end
-				ESX.Game.SpawnVehicle(Config.JobVan, jobCoords, selectedJob.Heading, function(vehicle)
+				RSCore.Functions.SpawnVehicle(Config.JobVan, jobCoords, selectedJob.Heading, function(vehicle)
 					SetEntityCoordsNoOffset(vehicle, selectedJob.Spot.x, selectedJob.Spot.y, selectedJob.Spot.z)
 					SetEntityHeading(vehicle,selectedJob.Heading)
 					FreezeEntityPosition(vehicle, true)
@@ -510,8 +542,12 @@ function LockpickJobVan(selectedJob)
 	Citizen.Wait(500)
 	FreezeEntityPosition(playerPed, true)
 	TaskPlayAnimAdvanced(playerPed, animDict, animName, selectedJob.LockpickPos.x, selectedJob.LockpickPos.y, selectedJob.LockpickPos.z, 0.0, 0.0, selectedJob.LockpickHeading, 3.0, 1.0, -1, 31, 0, 0, 0 )
+	RSCore.Functions.Progressbar("connecting", "LOCKPICKING VAN", 7500, false, true, {}, {}, {}, {}, function() -- Done
 
-	exports['progressBars']:startUI(7500, "LOCKPICKING VAN")
+	end, function() -- Cancel
+
+	end)
+	--exports['progressBars']:startUI(7500, "LOCKPICKING VAN")
 	Citizen.Wait(7500)
 	
 	ClearPedTasks(playerPed)
@@ -556,11 +592,21 @@ AddEventHandler("t1ger_drugs:DrugEffects", function(k,v)
 	local ped = GetPlayerPed(-1)
 	if not IsPedInAnyVehicle(GetPlayerPed(-1)) then
 		TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_SMOKING_POT", 0, true)
-		exports['progressBars']:startUI(v.UsableTime, v.ProgressBarText)
+		RSCore.Functions.Progressbar("connecting", v.UsableTime, v.ProgressBarText, false, true, {}, {}, {}, {}, function() -- Done
+
+		end, function() -- Cancel
+	
+		end)
+	--	exports['progressBars']:startUI(v.UsableTime, v.ProgressBarText)
 		Citizen.Wait(v.UsableTime)
 		ClearPedTasks(PlayerPedId())
 	else
-		exports['progressBars']:startUI(v.UsableTime, v.ProgressBarText)
+		RSCore.Functions.Progressbar("connecting", v.UsableTime, v.ProgressBarText, false, true, {}, {}, {}, {}, function() -- Done
+
+		end, function() -- Cancel
+	
+		end)
+	--	exports['progressBars']:startUI(v.UsableTime, v.ProgressBarText)
 		Citizen.Wait(v.UsableTime)
 	end
 	if v.BodyArmor then
@@ -614,12 +660,22 @@ AddEventHandler("t1ger_drugs:ConvertProcess", function(k,v)
 	if not IsPedInAnyVehicle(GetPlayerPed(-1)) then
 		TaskPlayAnim(GetPlayerPed(-1),"misscarsteal1car_1_ext_leadin","base_driver2",8.0, -8, -1, 49, 0, 0, 0, 0)
 		FreezeEntityPosition(GetPlayerPed(-1), true)
-		exports['progressBars']:startUI(v.ConversionTime, v.ProgressBarText)
+		RSCore.Functions.Progressbar("connecting", v.ConversionTime, v.ProgressBarText, false, true, {}, {}, {}, {}, function() -- Done
+
+		end, function() -- Cancel
+	
+		end)
+		--exports['progressBars']:startUI(v.ConversionTime, v.ProgressBarText)
 		Citizen.Wait(v.ConversionTime)
 		FreezeEntityPosition(GetPlayerPed(-1), false)
 		ClearPedTasks(GetPlayerPed(-1))
 	else
-		exports['progressBars']:startUI(v.ConversionTime, v.ProgressBarText)
+		RSCore.Functions.Progressbar("connecting", v.ConversionTime, v.ProgressBarText, false, true, {}, {}, {}, {}, function() -- Done
+
+		end, function() -- Cancel
+	
+		end)
+	--	exports['progressBars']:startUI(v.ConversionTime, v.ProgressBarText)
 		Citizen.Wait(v.ConversionTime)
 	end
 end)
@@ -641,7 +697,7 @@ Citizen.CreateThread(function()
 				if Config.Enable3DTextToSell then
 					DrawText3Ds(pos.x, pos.y, pos.z, "Press ~g~[H]~s~ to offer ~y~drugs~s~")
 				else
-					ESX.ShowHelpNotification("Press ~g~ ~INPUT_VEH_HEADLIGHT~ ~s~ to offer ~r~drugs~s~")
+				RSCore.Functions.Notify("Press ~g~ ~INPUT_VEH_HEADLIGHT~ ~s~ to offer ~r~drugs~s~")
 				end
 				if IsControlJustPressed(1,74) then
 					oldped = ped
@@ -653,7 +709,12 @@ Citizen.CreateThread(function()
 					SetEntityHeading(player,GetHeadingFromVector_2d(pos.x-playerPos.x,pos.y-playerPos.y))
 					
 					local chance = math.random(1,3)
-					exports['progressBars']:startUI((Config.SellDrugsTime * 1000), Config.SellDrugsBarText)
+					RSCore.Functions.Progressbar("connecting", (Config.SellDrugsTime * 1000), Config.SellDrugsBarText, false, true, {}, {}, {}, {}, function() -- Done
+
+					end, function() -- Cancel
+				
+					end)
+					--exports['progressBars']:startUI((Config.SellDrugsTime * 1000), Config.SellDrugsBarText)
 					Citizen.Wait((Config.SellDrugsTime * 1000))
 					if chance == 1 or chance == 2 then
 						TaskPlayAnim(player, "mp_common", "givetake2_a", 8.0, 8.0, 2000, 0, 1, 0,0,0)
