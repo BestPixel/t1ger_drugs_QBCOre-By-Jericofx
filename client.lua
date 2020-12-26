@@ -35,10 +35,10 @@ local DrugSellTimer = GetGameTimer() - 2 * 2500
 Citizen.CreateThread(function()
 	while RSCore == nil do
 		TriggerEvent('RSCore:GetObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
+		Citizen.Wait(200)
 	end
 	while RSCore.Functions.GetPlayerData().job == nil do
-		Citizen.Wait(10)
+		Citizen.Wait(300)
 	end
 	PlayerData = RSCore.Functions.GetPlayerData()
 	isPlayerWhitelisted = refreshPlayerWhitelisted()
