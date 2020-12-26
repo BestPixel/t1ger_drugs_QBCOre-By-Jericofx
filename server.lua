@@ -64,7 +64,7 @@ Citizen.CreateThread(function() -- do not touch this thread function!
 end)
 
 -- Usable item to start drugs jobs:
-ESX.RegisterUsableItem('drugItem', function(source)
+RSCore.Functions.CreateUseableItem('drugItem', function(source)
 	local xPlayer = RSCore.Functions.GetPlayer(source)
 	if not HasCooldown(GetPlayerIdentifier(source)) then
 		if xPlayer.Functions.GetItemByName(Config.HackerDevice).amount >= 1 then
@@ -112,7 +112,7 @@ end)
 -- Usable item for drug effects:
 Citizen.CreateThread(function()
 	for k,v in pairs(Config.DrugEffects) do 
-		ESX.RegisterUsableItem(v.UsableItem, function(source)
+		RSCore.Functions.CreateUseableItem(v.UsableItem, function(source)
 			local xPlayer = RSCore.Functions.GetPlayer(source)
 			local itemLabel = RSCore.Functions.GetItemByName(v.UsableItem)
 			
@@ -130,7 +130,7 @@ end)
 -- Usable item to convert drugs:
 Citizen.CreateThread(function()
 	for k,v in pairs(Config.DrugConversion) do 
-		ESX.RegisterUsableItem(v.UsableItem, function(source)
+		RSCore.Functions.CreateUseableItem(v.UsableItem, function(source)
 			local xPlayer = RSCore.Functions.GetPlayer(source)
 			local itemLabel = RSCore.Functions.GetItemByName(v.UsableItem)
 			local drugOutput
