@@ -259,7 +259,14 @@ RegisterServerEvent("t1ger_drugs:canSellDrugs")
 AddEventHandler("t1ger_drugs:canSellDrugs", function()
 	local xPlayer = RSCore.Functions.GetPlayer(source)
 	if xPlayer ~= nil then
-		local soldAmount = (xPlayer.Functions.GetItemByName("coke1g").count > 0 or xPlayer.Functions.GetItemByName("meth1g").count > 0 or xPlayer.Functions.GetItemByName("weed4g").count > 0) and CheckSoldAmount(xPlayer.getIdentifier()) < Config.maxCap
+	--
+	--print(xPlayer.Functions.GetItemByName("coke1g").amount)
+		local coke = xPlayer.Functions.GetItemByName("coke1g")
+		local meth = xPlayer.Functions.GetItemByName("meth1g")
+		local weed = xPlayer.Functions.GetItemByName("weed4g")
+	--	print(coke.." | "..meth.." | "..weed)
+		local cantidad = ( coke.amount > 0 or meth.amount > 0 or weed.amount > 0)
+		local soldAmount = cantidad and CheckSoldAmount(xPlayer.PlayerData.steam) < Config.maxCap
 		TriggerClientEvent("t1ger_drugs:canSellDrugs",source,soldAmount)
 	end
 end)
